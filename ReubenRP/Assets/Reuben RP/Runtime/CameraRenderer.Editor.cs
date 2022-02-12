@@ -43,13 +43,29 @@ public partial class CameraRenderer
     }
 #endif
 
-    partial void DrawGizmos();
+    // partial void DrawGizmos();
+    partial void DrawGizmosBeforeFX();  //后效前的辅助线
+    partial void DrawGizmosAfterFX();   //后效后的辅助线
 #if UNITY_EDITOR
-    partial void DrawGizmos()       //绘制辅助线框
+    // partial void DrawGizmos()       //绘制辅助线框
+    // {
+    //     if (Handles.ShouldRenderGizmos())
+    //     {
+    //         context.DrawGizmos(camera, GizmoSubset.PreImageEffects);    //后处理前绘制辅助线
+    //         context.DrawGizmos(camera, GizmoSubset.PostImageEffects);   //后处理后绘制辅助线
+    //     }
+    // }
+    partial void DrawGizmosBeforeFX()       //绘制辅助线框
     {
         if (Handles.ShouldRenderGizmos())
         {
             context.DrawGizmos(camera, GizmoSubset.PreImageEffects);    //后处理前绘制辅助线
+        }
+    }
+    partial void DrawGizmosAfterFX()       //绘制辅助线框
+    {
+        if (Handles.ShouldRenderGizmos())
+        {
             context.DrawGizmos(camera, GizmoSubset.PostImageEffects);   //后处理后绘制辅助线
         }
     }

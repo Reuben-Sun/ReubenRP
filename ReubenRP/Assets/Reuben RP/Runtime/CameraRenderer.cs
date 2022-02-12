@@ -14,8 +14,8 @@ public partial class CameraRenderer
     private static ShaderTagId litShaderTagId = new ShaderTagId("ReubenLit");           //支持的着色器标志ID, 这个是Lit
 
     private Lighting lighting = new Lighting(); //光源信息
-
-
+    private PostFXStack postFXStack = new PostFXStack();    //后效栈
+    private static int frameBufferId = Shader.PropertyToID("_CameraFrameBuffer");
     
     //创建一个渲染缓冲区
     private CommandBuffer buffer = new CommandBuffer
@@ -23,7 +23,7 @@ public partial class CameraRenderer
         name = bufferName
     };
     
-    public void Render(ScriptableRenderContext _context, Camera _camera, bool _useDynamicBatching, bool _useGPUInstancing, ShadowSettings shadowSettings)
+    public void Render(ScriptableRenderContext _context, Camera _camera, bool _useDynamicBatching, bool _useGPUInstancing, ShadowSettings _shadowSettings, PostFXSettings _postFXSettings)
     {
         context = _context;
         camera = _camera;
@@ -31,7 +31,7 @@ public partial class CameraRenderer
         PrepareBuffer();    //设置命令缓冲区的名字
         PrepareForSceneWindow();
 
-        if (!HadCull(shadowSettings.maxDistance))     //剔除检测
+        if (!HadCull(_shadowSettings.maxDistance))     //剔除检测
         {
             return;
         }
@@ -39,7 +39,9 @@ public partial class CameraRenderer
         buffer.BeginSample("_DirectionalShadowAtlas");      //开始阴影采样
         ExecuteBuffer();
         
-        lighting.Setup(context, cullingResults, shadowSettings);    //传入光照信息
+        lighting.Setup(context, cullingResults, _shadowSettings);    //传入光照信息
+        
+        postFXStack.Setup(context, camera, _postFXSettings);     //传入后效信息
         
         buffer.EndSample("_DirectionalShadowAtlas");        //结束阴影采样
         
@@ -49,9 +51,18 @@ public partial class CameraRenderer
 
         DrawUnsupportedShaders();   //绘制不支持的物体
         
-        DrawGizmos();   //绘制辅助线
+        // DrawGizmos();   //绘制辅助线
+        DrawGizmosBeforeFX();   //绘制后效前的辅助线
         
-        lighting.Cleanup();     //释放贴图内存
+        if (postFXStack.IsActive)
+        {
+            postFXStack.Render(frameBufferId);
+        }
+        
+        DrawGizmosAfterFX();    //绘制后效后的辅助线
+        
+        Cleanup();
+        // lighting.Cleanup();     //释放贴图内存（已经移到上面这个函数了）
         
         Submit();   //执行
     }
@@ -60,6 +71,17 @@ public partial class CameraRenderer
     {
         context.SetupCameraProperties(camera);      //设置相机的属性与矩阵
         CameraClearFlags flags = camera.clearFlags;     //获取相机 clear flags 
+
+        if (postFXStack.IsActive)
+        {
+            if (flags > CameraClearFlags.Color)
+            {
+                flags = CameraClearFlags.Color;     //开启后效后，应该始终清除颜色和深度缓冲
+            }
+            buffer.GetTemporaryRT(frameBufferId, camera.pixelWidth, camera.pixelHeight, 32, FilterMode.Bilinear, RenderTextureFormat.Default);
+            buffer.SetRenderTarget(frameBufferId, RenderBufferLoadAction.DontCare, RenderBufferStoreAction.Store);
+        }
+        
         buffer.ClearRenderTarget(
             flags <= CameraClearFlags.Depth, 
             flags == CameraClearFlags.Color, 
@@ -127,5 +149,14 @@ public partial class CameraRenderer
     {
         buffer.name = "Reuben " + camera.name;
     }
-    
+
+    void Cleanup()      //释放后效使用的渲染纹理
+    {
+        lighting.Cleanup();
+
+        if (postFXStack.IsActive)
+        {
+            buffer.ReleaseTemporaryRT(frameBufferId);
+        }
+    }
 }

@@ -42,10 +42,13 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Reuben RP\Runtime\Lighting.cs" />
+     <Compile Include="Assets\Reuben RP\Runtime\PostFXStack.Editor.cs" />
+     <Compile Include="Assets\Reuben RP\Runtime\PostFXStack.cs" />
      <Compile Include="Assets\Reuben RP\Runtime\ReubenRenderPipeline.cs" />
      <Compile Include="Assets\Reuben RP\Runtime\Shadows.cs" />
      <Compile Include="Assets\Scripts\MaterialBlock.cs" />
      <Compile Include="Assets\Reuben RP\Settings\ShadowSettings.cs" />
+     <Compile Include="Assets\Reuben RP\Runtime\PostFXSettings.cs" />
      <Compile Include="Assets\Reuben RP\Runtime\CameraRenderer.cs" />
      <Compile Include="Assets\Reuben RP\Runtime\CameraRenderer.Editor.cs" />
      <Compile Include="Assets\Reuben RP\Runtime\ReubenRenderPipelineAsset.cs" />
@@ -60,10 +63,12 @@
      <None Include="Assets\Reuben RP\Shaders\LitForwardPass.hlsl" />
      <None Include="Assets\Reuben RP\ShaderLibrary\Lighting.hlsl" />
      <None Include="Assets\Reuben RP\Shaders\UnlitPass.hlsl" />
+     <None Include="Assets\Reuben RP\Shaders\Post FX Stack.shader" />
      <None Include="Assets\Reuben RP\Shaders\Lit.shader" />
      <None Include="Assets\Reuben RP\Shaders\LitInput.hlsl" />
      <None Include="Assets\Reuben RP\ShaderLibrary\GlobalIllumination.hlsl" />
      <None Include="Assets\Reuben RP\ShaderLibrary\Shadows.hlsl" />
+     <None Include="Assets\Reuben RP\Shaders\PostFXStackPasses.hlsl" />
      <Reference Include="UnityEngine">
      <HintPath>D:/program/UnityEngine/2021.2.2f1c1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>
