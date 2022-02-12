@@ -69,6 +69,7 @@ half4 LitForwardPassFragment(Varyings i) : SV_Target
     surface.posWS = i.posWS;
     surface.depth = -TransformWorldToView(i.posWS).z;
     surface.dither = InterleavedGradientNoise(i.pos.xy, 0);     //传入屏幕坐标，生成一个抖动值
+    surface.fresnelStrength = GetFresnel(i.uv);
 
     #if defined(_PREMULTIPLY_ALPHA)     //是否开启透明度预乘
         BRDF brdf = GetBRDF(surface, true);
@@ -76,7 +77,7 @@ half4 LitForwardPassFragment(Varyings i) : SV_Target
         BRDF brdf = GetBRDF(surface);
     #endif
 
-    GI gi = GetGI(GI_FRAGMENT_DATA(i), surface);
+    GI gi = GetGI(GI_FRAGMENT_DATA(i), surface, brdf);
     
     float3 finalColor = GetLighting(surface, brdf, gi);
     finalColor += GetEmission(i.uv);

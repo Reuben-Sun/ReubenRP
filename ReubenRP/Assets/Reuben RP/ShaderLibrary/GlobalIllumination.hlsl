@@ -2,9 +2,11 @@
 #define REUBEN_GI_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/EntityLighting.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/ImageBasedLighting.hlsl"
 
 TEXTURE2D(unity_Lightmap);      SAMPLER(samplerunity_Lightmap);
 // TEXTURE3D_FLOAT(unity_ProVolumeSH);     SAMPLER(samplerunity_ProbeVolumeSH);
+TEXTURECUBE(unity_SpecCube0);   SAMPLER(samplerunity_SpecCube0);    //间接光高光 Cube
 
 #if defined(LIGHTMAP_ON)
     #define GI_ATTRIBUTE_DATA float2 lightMapUV : TEXCOORD1;
@@ -65,15 +67,25 @@ float3 SampleLightProbe(Surface surface)
    
 }
 
+float3 SampleEnvironment(Surface surface, BRDF brdf)   //采样 cube，用于间接光高光
+{
+    float3 uvw = reflect(-surface.viewDir, surface.normal);     //反射方向
+    float mip = PerceptualRoughnessToMipmapLevel(brdf.perceptualRoughness);     //mipmap等级
+    float4 environment = SAMPLE_TEXTURECUBE_LOD(unity_SpecCube0, samplerunity_SpecCube0, uvw, mip);     
+    return DecodeHDREnvironment(environment, unity_SpecCube0_HDR);      //HDR解码
+}
+
 struct GI
 {
-    float3 diffuse;     //漫反射颜色
+    float3 diffuse;     //间接光漫反射颜色
+    float3 specular;    //间接光高光颜色
 };
 
-GI GetGI(float2 lightMapUV, Surface surface)
+GI GetGI(float2 lightMapUV, Surface surface, BRDF brdf)
 {
     GI gi;
     gi.diffuse = SampleLightMap(lightMapUV) + SampleLightProbe(surface);
+    gi.specular = SampleEnvironment(surface, brdf);
     return gi;
 }
 

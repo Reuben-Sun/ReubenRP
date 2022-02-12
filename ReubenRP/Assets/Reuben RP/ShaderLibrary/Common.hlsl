@@ -18,6 +18,7 @@
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Common.hlsl"
 //引用unity官方的空间转换库
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/SpaceTransforms.hlsl"
+#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 
 float DistanceSquared(float3 pointA, float3 pointB)     //计算两点距离的平方
 {

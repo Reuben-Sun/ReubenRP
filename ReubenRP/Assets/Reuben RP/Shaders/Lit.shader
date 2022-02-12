@@ -6,6 +6,7 @@ Shader "Reuben RP/Lit"
         _MainTex("BaseMap", 2D) = "white" {}
         _Metallic("Metallic", Range(0,1)) = 0
         _Smoothness("Smoothness", Range(0,1)) = 0.5
+        _Fresnel("Fresnel", Range(0,1)) = 1
         
         [NoScaleOffset] _EmissionMap("Emission Map", 2D) = "wgite" {}
         [HDR] _EmissionColor("Emission Color", Color) = (0,0,0,0)

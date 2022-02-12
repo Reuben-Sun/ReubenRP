@@ -82,7 +82,7 @@ public partial class CameraRenderer
             //批处理使用状态
             enableDynamicBatching = useDynamicBatching,
             enableInstancing = useGPUInstancing,
-            perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume
+            perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume | PerObjectData.ReflectionProbes
         };   //设置渲染的 Pass和排序方式
 
         drawingSettings.SetShaderPassName(1, litShaderTagId);   //渲染 Lit表示的 Pass块

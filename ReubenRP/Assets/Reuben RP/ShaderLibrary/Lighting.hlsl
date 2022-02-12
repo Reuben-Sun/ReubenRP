@@ -20,7 +20,8 @@ float3 GetLighting(Surface surface, BRDF brdf, GI gi)
 {
     ShadowData shadowData = GetShadowData(surface);     //获得物体表面阴影数据
     
-    float3 color = gi.diffuse * brdf.diffuse;      //未接受光源前，物体的颜色来自之前烘焙的间接光
+    // float3 color = gi.diffuse * brdf.diffuse;      //未接受光源前，物体的颜色来自之前烘焙的间接光
+    float3 color = IndirectBRDF(surface, brdf, gi.diffuse, gi.specular);
     for(int i = 0; i < GetDirectionalLightCount(); i++)     //遍历方向光
     {
         Light light = GetDirectionalLight(i, surface, shadowData);
