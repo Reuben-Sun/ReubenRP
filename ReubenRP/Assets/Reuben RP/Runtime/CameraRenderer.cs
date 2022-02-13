@@ -116,7 +116,7 @@ public partial class CameraRenderer
         sortingSettings.criteria = SortingCriteria.CommonTransparent;   //设置相机的透明排序模式，这里设置的是透明对象
         drawingSettings.sortingSettings = sortingSettings;
         filteringSettings.renderQueueRange = RenderQueueRange.transparent;      //设置那些类型的渲染队列可以被绘制，这里是透明物体
-        context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);      //绘制不透明物体
+        context.DrawRenderers(cullingResults, ref drawingSettings, ref filteringSettings);      //绘制透明物体
     }
 
     void Submit()   //提交缓冲徐渲染命令

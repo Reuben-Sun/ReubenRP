@@ -6,7 +6,13 @@ Shader "Reuben RP/Lit"
         _MainTex("BaseMap", 2D) = "white" {}
         _Metallic("Metallic", Range(0,1)) = 0
         _Smoothness("Smoothness", Range(0,1)) = 0.5
+        _Occlusion("Occlusion", Range(0,1)) = 1
         _Fresnel("Fresnel", Range(0,1)) = 1
+        [NoScaleOffset] _MaskMap("Mask MODS", 2D) = "white"{}
+        
+        [Toggle(_NORMAL_MAP)] _NormalMapToggle("Normal Map", Float) = 0
+        [NoScaleOffset] _NormalMap("NormalMap", 2D) = "bump"{}
+        _NormalScale("Normal Scale", Range(0,1)) = 1
         
         [NoScaleOffset] _EmissionMap("Emission Map", 2D) = "wgite" {}
         [HDR] _EmissionColor("Emission Color", Color) = (0,0,0,0)
@@ -41,6 +47,7 @@ Shader "Reuben RP/Lit"
             #pragma shader_feature _CLIPPING            //是否开启透明度测试
             #pragma shader_feature _PREMULTIPLY_ALPHA   //是否启用透明度预乘
             #pragma shader_feature _RECELIVE_SHADOWS    //是否接受投影
+            #pragma shader_feature _NORMAL_MAP          //是否开启法线贴图
             
             #pragma vertex LitForawrdPassVertex
             #pragma fragment LitForwardPassFragment

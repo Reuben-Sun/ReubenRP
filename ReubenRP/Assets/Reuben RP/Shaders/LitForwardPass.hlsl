@@ -14,6 +14,7 @@ struct Attributes
 {
     float4 vertex: POSITION;    //模型空间顶点坐标
     float3 normal: NORMAL;      //模型空间法向量
+    float4 tangentOS: TANGENT;  //模型空间切线
     float2 uv: TEXCOORD0;       //第一套 uv
     GI_ATTRIBUTE_DATA
     UNITY_VERTEX_INPUT_INSTANCE_ID      
@@ -27,6 +28,11 @@ struct Varyings
     float3 viewDirWS: TEXCOORD2;    //世界空间视线方向
     float3 posWS: TEXCOORD3;        //世界空间顶点位置
     GI_VARYINFS_DATA
+    
+    #if defined(_NORMAL_MAP)
+        float4 tangentWS: TEXCOORD5;    //世界空间切线
+    #endif
+    
     UNITY_VERTEX_INPUT_INSTANCE_ID
 };
 
@@ -44,6 +50,10 @@ Varyings LitForawrdPassVertex(Attributes v)
     
     o.normalWS = TransformObjectToWorldNormal(v.normal);
     
+    #if defined(_NORMAL_MAP)
+        o.tangentWS = float4(TransformObjectToWorldDir(v.tangentOS.xyz), v.tangentOS.w);
+    #endif
+    
     return o;
 }
 
@@ -60,7 +70,15 @@ half4 LitForwardPassFragment(Varyings i) : SV_Target
     #endif
     
     Surface surface = (Surface)0;
-    surface.normal = normalize(i.normalWS);
+
+    #if defined(_NORMAL_MAP)
+        surface.normal = NormalTangentToWorld(GetNormalTS(i.uv), i.normalWS, i.tangentWS);
+        surface.interpolatedNormal = i.normalWS;    //未归一化的法向量
+    #else
+        surface.normal = normalize(i.normalWS);
+        surface.interpolatedNormal = surface.normal;
+    #endif
+    
     surface.albedo = color.rgb;
     surface.alpha = color.a;
     surface.metallic = GetMetallic(i.uv);
@@ -70,6 +88,8 @@ half4 LitForwardPassFragment(Varyings i) : SV_Target
     surface.depth = -TransformWorldToView(i.posWS).z;
     surface.dither = InterleavedGradientNoise(i.pos.xy, 0);     //传入屏幕坐标，生成一个抖动值
     surface.fresnelStrength = GetFresnel(i.uv);
+    surface.occlusion = GetOcclusion(i.uv);
+    
 
     #if defined(_PREMULTIPLY_ALPHA)     //是否开启透明度预乘
         BRDF brdf = GetBRDF(surface, true);

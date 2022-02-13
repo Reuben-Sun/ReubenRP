@@ -86,13 +86,15 @@ float GetDirectionalShadowAttenuation(DirectionalShadowData data,ShadowData glob
     {
         return 1;       //当灯光阴影强度小于0时，阴影衰减不受阴影影响
     }
-    float3 normalBias = surface.normal * _CascadeData[global.cascadeIndex].y;       //法线偏差
+    // float3 normalBias = surface.normal * _CascadeData[global.cascadeIndex].y;       //法线偏差
+    float3 normalBias = surface.interpolatedNormal *(data.normalBias * _CascadeData[global.cascadeIndex].y);       //法线偏差
     float3 positionSTS = mul(_DirectionalShadowMatrices[data.tileIndex], float4(surface.posWS + normalBias, 1)).xyz;     //获得图块空间位置
     float shadow = FilterDirectionalShadow(positionSTS);       //对图集进行采样
 
     if(global.cascadeBlend < 1.0)   //如果级联混合小于 1，表示在级联过渡区域内，采集下一个级联并插值
     {
-        normalBias = surface.normal * (data.normalBias * _CascadeData[global.cascadeIndex + 1].y);      //下一个级联
+        // normalBias = surface.normal * (data.normalBias * _CascadeData[global.cascadeIndex + 1].y);      //下一个级联
+        normalBias = surface.interpolatedNormal * (data.normalBias * _CascadeData[global.cascadeIndex + 1].y);      //下一个级联
         positionSTS = mul(_DirectionalShadowMatrices[data.tileIndex + 1], float4(surface.posWS + normalBias, 1.0)).xyz;
         shadow = lerp(FilterDirectionalShadow(positionSTS), shadow, global.cascadeBlend);
     }
