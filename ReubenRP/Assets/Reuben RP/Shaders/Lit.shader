@@ -43,6 +43,7 @@ Shader "Reuben RP/Lit"
             #pragma multi_compile _ _CASCADE_BLEND_SOFT _CASCADE_BLEND_DITHER       //级联混合模式
             #pragma multi_compile _ LIGHTMAP_ON     //开启光照贴图
             #pragma multi_compile _ LOD_FADE_CROSSFADE      //开启 LOD混合
+            #pragma multi_compile _ _LIGHTS_PER_OBJECT      //开启逐对象光照
 
             #pragma shader_feature _CLIPPING            //是否开启透明度测试
             #pragma shader_feature _PREMULTIPLY_ALPHA   //是否启用透明度预乘

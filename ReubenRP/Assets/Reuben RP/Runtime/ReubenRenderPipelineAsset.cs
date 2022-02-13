@@ -12,14 +12,17 @@ public class ReubenRenderPipelineAsset : RenderPipelineAsset
     [SerializeField] private bool useGPUInstancing = true;
     [Tooltip("启用SRP合批")]
     [SerializeField] private bool useSRPBatcher = true;
+    [Tooltip("使用逐对象光照")]
+    [SerializeField] private bool useLightsPerObject = true;
     [Tooltip("阴影设置")]
     [SerializeField] private ShadowSettings shadows = default;
     [Tooltip("屏幕后处理")]
     [SerializeField] private PostFXSettings postFXSettings = default;
+
     
     protected override RenderPipeline CreatePipeline()
     {
-        return new ReubenRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, shadows, postFXSettings);
+        return new ReubenRenderPipeline(useDynamicBatching, useGPUInstancing, useSRPBatcher, useLightsPerObject,shadows, postFXSettings);
     }
 
 

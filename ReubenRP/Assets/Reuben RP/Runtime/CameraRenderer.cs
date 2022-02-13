@@ -23,7 +23,7 @@ public partial class CameraRenderer
         name = bufferName
     };
     
-    public void Render(ScriptableRenderContext _context, Camera _camera, bool _useDynamicBatching, bool _useGPUInstancing, ShadowSettings _shadowSettings, PostFXSettings _postFXSettings)
+    public void Render(ScriptableRenderContext _context, Camera _camera, bool _useDynamicBatching, bool _useGPUInstancing,bool _useLightsPerObject, ShadowSettings _shadowSettings, PostFXSettings _postFXSettings)
     {
         context = _context;
         camera = _camera;
@@ -39,7 +39,7 @@ public partial class CameraRenderer
         buffer.BeginSample("_DirectionalShadowAtlas");      //开始阴影采样
         ExecuteBuffer();
         
-        lighting.Setup(context, cullingResults, _shadowSettings);    //传入光照信息
+        lighting.Setup(context, cullingResults, _shadowSettings, _useLightsPerObject);    //传入光照信息
         
         postFXStack.Setup(context, camera, _postFXSettings);     //传入后效信息
         
@@ -47,7 +47,7 @@ public partial class CameraRenderer
         
         Setup();    //初始化
         
-        DrawVisibleGeometry(_useDynamicBatching, _useGPUInstancing);      //绘制可见物
+        DrawVisibleGeometry(_useDynamicBatching, _useGPUInstancing, _useLightsPerObject);      //绘制可见物
 
         DrawUnsupportedShaders();   //绘制不支持的物体
         
@@ -92,8 +92,10 @@ public partial class CameraRenderer
 
     }
     
-    void DrawVisibleGeometry(bool useDynamicBatching, bool useGPUInstancing)      //绘制可见物
+    void DrawVisibleGeometry(bool useDynamicBatching, bool useGPUInstancing, bool useLightsPerObject)      //绘制可见物
     {
+        PerObjectData lightsPerObjectFlags =
+            useLightsPerObject ? PerObjectData.LightData | PerObjectData.LightIndices : PerObjectData.None;     //判断是否使用逐对象光源
         //绘制顺序：不透明物体——天空盒——透明物体
         var sortingSettings = new SortingSettings(camera)       //设置相机的透明排序模式，这里设置的是不透明对象
         {
@@ -104,7 +106,7 @@ public partial class CameraRenderer
             //批处理使用状态
             enableDynamicBatching = useDynamicBatching,
             enableInstancing = useGPUInstancing,
-            perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume | PerObjectData.ReflectionProbes
+            perObjectData = PerObjectData.Lightmaps | PerObjectData.LightProbe | PerObjectData.LightProbeProxyVolume | PerObjectData.ReflectionProbes | lightsPerObjectFlags
         };   //设置渲染的 Pass和排序方式
 
         drawingSettings.SetShaderPassName(1, litShaderTagId);   //渲染 Lit表示的 Pass块

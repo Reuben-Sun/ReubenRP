@@ -29,6 +29,9 @@ float4 unity_SHC;
 // float4 unity_ProbeVolumeMin;
 
 float4 unity_SpecCube0_HDR;
+
+float4 unity_LightData;
+float4 unity_LightIndices[2];
 CBUFFER_END
 
 float4x4 unity_MatrixVP;           //世界空间到裁剪空间
