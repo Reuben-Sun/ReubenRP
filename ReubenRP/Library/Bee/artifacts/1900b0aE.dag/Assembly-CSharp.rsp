@@ -349,6 +349,7 @@
 "Assets/Reuben RP/Runtime/PostFXStack.cs"
 "Assets/Reuben RP/Runtime/PostFXStack.Editor.cs"
 "Assets/Reuben RP/Runtime/ReubenRenderPipeline.cs"
+"Assets/Reuben RP/Runtime/ReubenRenderPipeline.Editor.cs"
 "Assets/Reuben RP/Runtime/ReubenRenderPipelineAsset.cs"
 "Assets/Reuben RP/Runtime/Shadows.cs"
 "Assets/Reuben RP/Settings/ShadowSettings.cs"

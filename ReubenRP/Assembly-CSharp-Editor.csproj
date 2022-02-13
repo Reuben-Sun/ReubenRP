@@ -42,6 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Reuben RP\Editor\ReubenShaderGUI.cs" />
+     <Compile Include="Assets\Reuben RP\Editor\ReubenLightEditor.cs" />
      <Reference Include="UnityEngine">
      <HintPath>D:/program/UnityEngine/2021.2.2f1c1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
      </Reference>

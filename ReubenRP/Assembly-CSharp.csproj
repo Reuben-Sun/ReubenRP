@@ -52,6 +52,7 @@
      <Compile Include="Assets\Reuben RP\Runtime\CameraRenderer.cs" />
      <Compile Include="Assets\Reuben RP\Runtime\CameraRenderer.Editor.cs" />
      <Compile Include="Assets\Reuben RP\Runtime\ReubenRenderPipelineAsset.cs" />
+     <Compile Include="Assets\Reuben RP\Runtime\ReubenRenderPipeline.Editor.cs" />
      <None Include="Assets\Reuben RP\ShaderLibrary\BRDF.hlsl" />
      <None Include="Assets\Reuben RP\Shaders\MetaPass.hlsl" />
      <None Include="Assets\Reuben RP\ShaderLibrary\Light.hlsl" />

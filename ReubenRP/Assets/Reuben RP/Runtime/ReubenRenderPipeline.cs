@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.Rendering;
 
-public class ReubenRenderPipeline : RenderPipeline
+public partial class ReubenRenderPipeline : RenderPipeline
 {
     private CameraRenderer renderer = new CameraRenderer();
     private ShadowSettings _shadowSettings;
@@ -30,7 +31,13 @@ public class ReubenRenderPipeline : RenderPipeline
         _useGPUInstancing = useGPUInstancing;       //GPU多例合批
         GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;    //SRP合批处理
         GraphicsSettings.lightsUseLinearIntensity = true;       //灯光使用 Linear
-        
 
+        InitializeForEditor();
+    }
+
+    protected override void Dispose(bool disposing)     //当管线被清理掉时
+    {
+        base.Dispose(disposing);
+        Lightmapping.ResetDelegate();       //重置委托
     }
 }
