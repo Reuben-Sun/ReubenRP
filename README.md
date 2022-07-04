@@ -34,3 +34,9 @@
 ### 后续更新计划
 
 - 打算在里面加一点卡渲，写个ssgi
+
+### 构建与运行
+Windows平台Unity打开即可
+
+### 资料
+Catelike SRP Tutorials
